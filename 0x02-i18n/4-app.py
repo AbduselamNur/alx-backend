@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Basic Flask app """
+"""Force locale with URL parameter"""
 from flask import Flask, render_template, request
 from flask_babel import Babel
 
@@ -20,15 +20,18 @@ app.url_map.strict_slashes = False
 @babel.localeselector
 def get_locale() -> str:
     """ GET locale
-    Return: best match from request.accept_languages
+    Return: Detect the best match for the supported languages
     """
+    locale = request.args.get('locale')
+    if locale and locale in app.config['LANGUAGES']:
+        return locale
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 @app.route('/')
 def index():
     """ GET /
-    Return: 3-index.html
+    Return: 4-index.html
     """
     return render_template('3-index.html')
 
